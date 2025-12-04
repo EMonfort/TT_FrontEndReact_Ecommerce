@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CarritoCompras from "./Carrito";
+import { useCartContext } from "../context/CartContext";
+import { useAuthContext } from "../context/AuthContext";
 
 export default function Productos() {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const [carrito, setCarrito] = useState([])
+
+  const navigate = useNavigate()
+
+  const {agregarAlCarrito} = useCartContext()
+  const {usuario} = useAuthContext()
+
+  const esAdmin = usuario?.nombre === "admin"
 
   useEffect(() => {
     //fetch("https://68d482e3214be68f8c696ae2.mockapi.io/api/productos")
@@ -22,11 +30,6 @@ export default function Productos() {
         setCargando(false);
       });
   }, []);
-
-  const agregarAlCarrito = (producto) => {
-    setCarrito([...carrito, producto])
-    alert(`Producto ${producto.nombre} agregado al carrito`)
-  }
 
   if (cargando) return <p>Cargando productos...</p>
   if (error) return <p>{error}</p>
@@ -45,10 +48,32 @@ export default function Productos() {
           <img src={producto.avatar} alt={producto.nombre} width="80%" />
           <Link to={`/productos/${producto.categoria}/${producto.id}`} state={{producto}}><button>Más detalles</button></Link>
           <button onClick={() => agregarAlCarrito(producto)}>Comprar</button>
+
+           {/* Botón Editar - SOLO visible para admin */}
+            {esAdmin && (
+              <div>
+                <hr/>
+                <button
+                  onClick={() =>
+                    navigate("/editar-productos", {
+                      state: { producto: producto },
+                    })
+                  }
+                  style={{
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    marginRight: "10px",
+                  }}
+                >
+                  Editar
+                </button>
+
+                </div>
+            )}
         </li>
       ))}
     </ul>
-    <CarritoCompras carrito={carrito} setCarrito={setCarrito}></CarritoCompras>
+    <CarritoCompras></CarritoCompras>
     </div>
 
   );

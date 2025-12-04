@@ -1,41 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useCartContext } from "../context/CartContext";
 
-export default function CarritoCompras({ carrito, setCarrito }) {
-  const navigate = useNavigate();
+export default function CarritoCompras() {
+  const { carrito, vaciarCarrito, carritoAgrupado, aumentarCantidad, disminuirCantidad, eliminarProducto  } = useCartContext()
 
-  // Agrupar productos por id
-  const carritoAgrupado = carrito.reduce((acc, producto) => {
-    const existente = acc.find((p) => p.id === producto.id);
-    if (existente) {
-      existente.cantidad += 1;
-    } else {
-      acc.push({ ...producto, cantidad: 1 });
-    }
-    return acc;
-  }, []);
-
-  const vaciarCarrito = () => {
-    setCarrito([]);
-  };
-
-  const eliminarProducto = (id) => {
-    setCarrito((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const aumentarCantidad = (id) => {
-    const producto = carrito.find((p) => p.id === id);
-    setCarrito([...carrito, producto]);
-  };
-
-  const disminuirCantidad = (id) => {
-    const index = carrito.findIndex((p) => p.id === id);
-    if (index !== -1) {
-      const nuevo = [...carrito];
-      nuevo.splice(index, 1);
-      setCarrito(nuevo);
-    }
-  };
+  const navigate = useNavigate();  
 
   const irAPagar = () => {
     navigate("/pagar", { state: { carrito } });

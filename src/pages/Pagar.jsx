@@ -1,16 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
+import { useCartContext } from "../context/CartContext";
 
-export default function Pagar({
-  isAuthenticated,
-  setIsAuthenticated,
-  usuario,
-  setUsuario,
-}) {
+export default function Pagar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Datos del carrito recibidos por state
-  const carrito = location.state?.carrito || [];
+  const { usuario, cerrarSesion } = useAuthContext();
+  const { carrito, vaciarCarrito } = useCartContext();
 
   // Agrupa productos iguales por id
   const productosAgrupados = carrito.reduce((acc, prod) => {
@@ -30,12 +27,8 @@ export default function Pagar({
 
   const comprar = () => {
     alert("¡Compra realizada con éxito!");
+    vaciarCarrito();
     navigate("/productos");
-  };
-
-  const cerrarSesion = () => {
-    setIsAuthenticated(false);
-    setUsuario({ nombre: "", email: "" });
   };
 
   return (
