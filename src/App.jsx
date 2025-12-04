@@ -13,6 +13,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import FormularioProducto from "./components/FormularioProducto";
 import EditarProductos from "./components/EditarProductos";
+import EliminarProducto from "./components/EliminarProducto";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           {/* RUTA PROTEGIDA - Admin */}
           <Route path="/agregar-producto" element={<RutaProtegida soloAdmin={true}><FormularioProducto /></RutaProtegida>}/>
           <Route path="/editar-productos" element={<RutaProtegida soloAdmin={true}><EditarProductos /></RutaProtegida>}/>
+          <Route path="/eliminar-productos" element={<RutaProtegida soloAdmin={true}><EliminarProducto /></RutaProtegida>}/>
         </Routes>
       </div>
       </InnerAuthProvider>

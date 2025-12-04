@@ -25,6 +25,12 @@ function Navbar() {
                 <div>
                   <span>Hola, {usuario.nombre}</span>
                   <span>Carrito: {carrito.length}</span>
+                  {/* ENLACE DASHBOARD solo para admin */}
+                  {usuario.nombre === "admin" && (
+                    <Link to="/dashboard" style={{margin: '0 10px'}}>
+                      Dashboard
+                    </Link>
+                  )}  
                   <button onClick={cerrarSesion}>
                     Cerrar Sesión
                   </button>

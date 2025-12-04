@@ -60,7 +60,7 @@ export default function Dashboard() {
                 display: 'inline-block'
               }}
             >
-              Ver Todos los Productos
+              Ver/Editar Productos
             </Link>
           </div>
         </div>

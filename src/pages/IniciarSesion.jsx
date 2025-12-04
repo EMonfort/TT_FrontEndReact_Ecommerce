@@ -66,6 +66,13 @@ export default function IniciarSesion() {
           Cancelar
         </button>
       </form>
+       <p style={{ marginTop: "20px", fontSize: "12px", color: "#666" }}>
+        <strong>Credenciales de prueba para Dashboard:</strong>
+        <br />
+        Nombre: admin
+        <br />
+        Email: 1234@admin
+      </p>
     </div>
   )
 }

@@ -1,28 +1,67 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-
 function EditarProductos() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const productoOriginal = state.producto;
-
 
   const [producto, setProducto] = useState({
     ...productoOriginal,
     categoria: productoOriginal.categoria || 'Sin categoría'
   });
   const [cargando, setCargando] = useState(false);
-
+  const [errores, setErrores] = useState({});
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
     setProducto(prev => ({ ...prev, [name]: value }));
   };
 
+  // f(x) validarFormulario
+  const validarFormulario = () => {
+    const errorDeCarga = {};
+
+    // nombre
+    if (!producto.nombre.trim()) {
+      errorDeCarga.nombre = 'El nombre es obligatorio.';
+    }
+
+    // precio
+    if (!producto.precio.trim()) {
+      errorDeCarga.precio = 'El precio es obligatorio.';
+    } else {
+      const precioLimpio = producto.precio.replace(/\./g, '').replace(',', '.');
+      const precioNumerico = parseFloat(precioLimpio);
+      
+      if (!/^[\d.,]+$/.test(producto.precio.replace(/\./g, ''))) {
+        errorDeCarga.precio = 'Solo números, puntos o comas.';
+      } else if (isNaN(precioNumerico)) {
+        errorDeCarga.precio = 'Precio no válido.';
+      } else if (precioNumerico <= 0) {
+        errorDeCarga.precio = 'Debe ser mayor a 0.';
+      }
+    }
+
+    // descripción
+    if (!producto.descripcion.trim()) {
+      errorDeCarga.descripcion = 'La descripción es obligatoria.';
+    } else if (producto.descripcion.length < 10) {
+      errorDeCarga.descripcion = 'Mínimo 10 caracteres.';
+    } else if (producto.descripcion.length > 200) {
+      errorDeCarga.descripcion = 'Máximo 200 caracteres.';
+    }
+
+    setErrores(errorDeCarga);
+    return Object.keys(errorDeCarga).length === 0;
+  };
+
 
   const manejarEnvio = async (e) => {
     e.preventDefault();
+
+     if (!validarFormulario()) return;
+
     setCargando(true);
     try {
       const productoEnviar = {
@@ -76,9 +115,10 @@ function EditarProductos() {
             value={producto.precio}
             onChange={manejarCambio}
             placeholder="Ej: 40.000 o 40.000,50"
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+            style={{ width: '100%', padding: '8px', marginTop: '5px',  border: `1px solid ${errores.precio ? 'red' : '#ccc'}`, }}
           />
           <small style={{ color: '#666' }}>Formato: punto para miles, coma para decimales</small>
+          {errores.precio && <p style={{ color: 'red', margin: '5px 0', fontSize: '14px' }}>{errores.precio}</p>}
         </div>
 
 

@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 
 function FormularioProducto() {
   // Estados del componente
   const [producto, setProducto] = useState({nombre: '', precio: '', descripcion: '', categoria: '', avatar: ''});
   const [errores, setErrores] = useState({});
   const [cargando, setCargando] = useState(false);
-
+  const navigate = useNavigate();
 
   // f(x) manejarCambios | inputs
   const manejarCambio = (e) => {
     const { name, value } = e.target;
-   
+    
     // Valida longitud max. descripción
     if (name === 'descripcion' && value.length > 200) return;
-   
+    
     setProducto(prev => ({ ...prev, [name]: value }));
-   
+    
     // Limpiar error del campo si existe
     if (errores[name]) {
       setErrores(prev => ({ ...prev, [name]: '' }));
@@ -37,7 +38,7 @@ function FormularioProducto() {
     } else {
       const precioLimpio = producto.precio.replace(/\./g, '').replace(',', '.');
       const precioNumerico = parseFloat(precioLimpio);
-     
+      
       if (!/^[\d.,]+$/.test(producto.precio.replace(/\./g, ''))) {
         errorDeCarga.precio = 'Solo números, puntos o comas.';
       } else if (isNaN(precioNumerico)) {
@@ -85,19 +86,30 @@ function FormularioProducto() {
     }
   };
 
-
   // f(x) manejarEnvio
   const manejarEnvio = async (e) => {
     e.preventDefault();
-   
+    
     // Validar antes de enviar
     if (!validarFormulario()) return;
-
 
     setCargando(true);
     try {
       await agregarProducto(producto);
-     
+
+      const agregarOtro = window.confirm('Producto agregado correctamente!\n\n¿Desea agregar otro producto?\n\n• "Aceptar": Agrega otro producto\n• "Cancelar": Redirige a la lista de productos');
+   
+    if (agregarOtro) {
+      // Limpiar formulario para nuevo producto
+      setProducto({nombre: '', precio: '', descripcion: '', categoria: '', avatar: ''});
+      setErrores({});
+    } else {
+
+    setTimeout(() => {
+    navigate('/productos');
+        }, 100);
+    }
+      
       // Limpiar formulario después del éxito
       setProducto({nombre: '', precio: '', descripcion: '', categoria: '', avatar: ''});
       setErrores({});
@@ -106,14 +118,15 @@ function FormularioProducto() {
     } finally {
       setCargando(false);
     }
-  };
 
+  
+  };
 
   // Renderizado del componente
   return (
     <form onSubmit={manejarEnvio} style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
       <h2>Agregar Producto</h2>
-     
+      
       {/* Campo Nombre */}
       <div style={{ marginBottom: '15px' }}>
         <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
@@ -135,7 +148,6 @@ function FormularioProducto() {
         />
         {errores.nombre && <p style={{ color: 'red', margin: '5px 0', fontSize: '14px' }}>{errores.nombre}</p>}
       </div>
-
 
       {/* Campo Precio */}
       <div style={{ marginBottom: '15px' }}>
@@ -163,7 +175,6 @@ function FormularioProducto() {
         {errores.precio && <p style={{ color: 'red', margin: '5px 0', fontSize: '14px' }}>{errores.precio}</p>}
       </div>
 
-
       {/* Campo Categoría */}
       <div style={{ marginBottom: '15px' }}>
         <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
@@ -185,7 +196,6 @@ function FormularioProducto() {
         />
       </div>
 
-
       {/* Campo Avatar URL */}
       <div style={{ marginBottom: '15px' }}>
         <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
@@ -206,7 +216,6 @@ function FormularioProducto() {
           }}
         />
       </div>
-
 
       {/* Campo Descripción */}
       <div style={{ marginBottom: '20px' }}>
@@ -241,11 +250,13 @@ function FormularioProducto() {
         )}
       </div>
 
-
       <button
         type="submit"
         disabled={cargando}
-        style={{width: '100%',padding: '12px', backgroundColor: cargando ? '#ccc' : 'darkolivegreen',
+        style={{
+          width: '100%',
+          padding: '12px',
+          backgroundColor: cargando ? '#ccc' : 'darkolivegreen',
           color: 'white',
           border: 'none',
           borderRadius: '4px',

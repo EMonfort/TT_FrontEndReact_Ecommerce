@@ -68,6 +68,21 @@ export default function Productos() {
                   Editar
                 </button>
 
+                <button
+                  onClick={() =>
+                    navigate("/eliminar-productos", {
+                      state: { producto: producto },
+                    })
+                  }
+                  style={{
+                    backgroundColor: "#dc3545",
+                    color: "white",
+                    marginRight: "10px",
+                  }}
+                >
+                  Eliminar
+                </button>
+
                 </div>
             )}
         </li>
