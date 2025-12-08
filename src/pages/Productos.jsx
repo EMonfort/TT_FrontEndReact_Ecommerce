@@ -3,38 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import CarritoCompras from "./Carrito";
 import { useCartContext } from "../context/CartContext";
 import { useAuthContext } from "../context/AuthContext";
+import { useProductsContext } from "../context/ProductsContext";
 
 export default function Productos() {
-  const [productos, setProductos] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
-
   const navigate = useNavigate()
 
   const {agregarAlCarrito} = useCartContext()
   const {usuario} = useAuthContext()
+  const { productos, cargando, error } = useProductsContext()
 
   const esAdmin = usuario?.nombre === "admin"
 
-  useEffect(() => {
-    //fetch("https://68d482e3214be68f8c696ae2.mockapi.io/api/productos")
-    fetch("https://68f581886b852b1d6f1443f2.mockapi.io/productos")
-      .then((respuesta) => respuesta.json())
-      .then((datos) => {
-        setProductos(datos);
-        setCargando(false);
-      })
-      .catch((error) => {
-        {console.error("Error!,", error)}
-        setError("Hubo un problema al cargar los productos.");
-        setCargando(false);
-      });
-  }, []);
-
+  
   if (cargando) return <p>Cargando productos...</p>
   if (error) return <p>{error}</p>
+  
 
-  return (
+   return (
     <div>
     <ul id="lista-productos">
       {productos.map((producto) => (
@@ -54,11 +39,7 @@ export default function Productos() {
               <div>
                 <hr/>
                 <button
-                  onClick={() =>
-                    navigate("/editar-productos", {
-                      state: { producto: producto },
-                    })
-                  }
+                  onClick={() => navigate('/formulario-producto', { state: { producto } }) }
                   style={{
                     backgroundColor: "#28a745",
                     color: "white",

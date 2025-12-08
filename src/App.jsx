@@ -10,15 +10,16 @@ import RutaProtegida from "./pages/RutaProtegida";
 import IniciarSesion from "./pages/IniciarSesion";
 import { CartProvider, useCartContext } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { ProductsProvider } from "./context/ProductsContext";
 import Dashboard from "./pages/Dashboard";
 import FormularioProducto from "./components/FormularioProducto";
-import EditarProductos from "./components/EditarProductos";
 import EliminarProducto from "./components/EliminarProducto";
 
 function App() {
   return (
     <CartProvider>
       <InnerAuthProvider>
+        <ProductsProvider>
       <div>
         <Navbar />
         <Routes>
@@ -31,11 +32,11 @@ function App() {
           <Route path="/pagar" element={<RutaProtegida><Pagar /></RutaProtegida>}/>
           <Route path="/dashboard" element={<RutaProtegida soloAdmin={true}><Dashboard /></RutaProtegida>}/>
           {/* RUTA PROTEGIDA - Admin */}
-          <Route path="/agregar-producto" element={<RutaProtegida soloAdmin={true}><FormularioProducto /></RutaProtegida>}/>
-          <Route path="/editar-productos" element={<RutaProtegida soloAdmin={true}><EditarProductos /></RutaProtegida>}/>
+          <Route path="/formulario-producto" element={<RutaProtegida soloAdmin={true}><FormularioProducto /></RutaProtegida>}/>
           <Route path="/eliminar-productos" element={<RutaProtegida soloAdmin={true}><EliminarProducto /></RutaProtegida>}/>
         </Routes>
       </div>
+      </ProductsProvider>
       </InnerAuthProvider>
     </CartProvider>
   );

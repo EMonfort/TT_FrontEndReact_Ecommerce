@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import {useNavigate, useLocation} from 'react-router-dom';
+import { useProductsContext } from '../context/ProductsContext';
+
 
 function FormularioProducto() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { validar, agregarProducto, editarProducto } = useProductsContext();
+
+
+  // Obtener el producto pasado por el state
+  const productoRecibido = location.state?.producto;
+
+  const modo = productoRecibido ? "editar" : "agregar";
+
+
   // Estados del componente
   const [producto, setProducto] = useState({nombre: '', precio: '', descripcion: '', categoria: '', avatar: ''});
   const [errores, setErrores] = useState({});
   const [cargando, setCargando] = useState(false);
-  const navigate = useNavigate();
+
+
+  // Cargar datos del producto si estamos en modo editar
+  useEffect(() => {
+    if (modo === "editar" && productoRecibido) {
+      setProducto({
+        id: productoRecibido.id || '',
+        nombre: productoRecibido.nombre || '',
+        precio: productoRecibido.precio || '',
+        descripcion: productoRecibido.descripcion || '',
+        categoria: productoRecibido.categoria || '',
+        avatar: productoRecibido.avatar || ''
+      });
+    }
+  }, [modo, productoRecibido]);
+
 
   // f(x) manejarCambios | inputs
   const manejarCambio = (e) => {
@@ -25,101 +54,62 @@ function FormularioProducto() {
 
   // f(x) validarFormulario
   const validarFormulario = () => {
-    const errorDeCarga = {};
-
-    // nombre
-    if (!producto.nombre.trim()) {
-      errorDeCarga.nombre = 'El nombre es obligatorio.';
-    }
-
-    // precio
-    if (!producto.precio.trim()) {
-      errorDeCarga.precio = 'El precio es obligatorio.';
-    } else {
-      const precioLimpio = producto.precio.replace(/\./g, '').replace(',', '.');
-      const precioNumerico = parseFloat(precioLimpio);
-      
-      if (!/^[\d.,]+$/.test(producto.precio.replace(/\./g, ''))) {
-        errorDeCarga.precio = 'Solo números, puntos o comas.';
-      } else if (isNaN(precioNumerico)) {
-        errorDeCarga.precio = 'Precio no válido.';
-      } else if (precioNumerico <= 0) {
-        errorDeCarga.precio = 'Debe ser mayor a 0.';
-      }
-    }
-
-    // descripción
-    if (!producto.descripcion.trim()) {
-      errorDeCarga.descripcion = 'La descripción es obligatoria.';
-    } else if (producto.descripcion.length < 10) {
-      errorDeCarga.descripcion = 'Mínimo 10 caracteres.';
-    } else if (producto.descripcion.length > 200) {
-      errorDeCarga.descripcion = 'Máximo 200 caracteres.';
-    }
-
-    setErrores(errorDeCarga);
-    return Object.keys(errorDeCarga).length === 0;
-  };
-
-  // f(x) para agregarProducto
-  const agregarProducto = async (producto) => {
-    try {
-      const productoEnviar = {
-        ...producto,
-        precio: producto.precio.replace(',', '.')
-      };
-
-      const respuesta = await fetch('https://68f581886b852b1d6f1443f2.mockapi.io/productos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productoEnviar),
-      });
-
-      if (!respuesta.ok) throw new Error('Error al agregar el producto.');
-
-      const data = await respuesta.json();
-      alert('Producto agregado correctamente');
-      return data;
-    } catch (error) {
-      alert('Hubo un problema al agregar el producto.');
-      throw error;
-    }
+    const resultado = validar(producto);
+    setErrores(resultado.errores);
+    return resultado.esValido;
   };
 
   // f(x) manejarEnvio
   const manejarEnvio = async (e) => {
     e.preventDefault();
-    
-    // Validar antes de enviar
+   
+    // Valida antes de enviar usando el contexto
     if (!validarFormulario()) return;
 
     setCargando(true);
     try {
-      await agregarProducto(producto);
+      const productoEnviar = {
+        ...producto,
+        precio: producto.precio.toString().replace(',', '.')
+      };
 
-      const agregarOtro = window.confirm('Producto agregado correctamente!\n\n¿Desea agregar otro producto?\n\n• "Aceptar": Agrega otro producto\n• "Cancelar": Redirige a la lista de productos');
-   
-    if (agregarOtro) {
-      // Limpiar formulario para nuevo producto
-      setProducto({nombre: '', precio: '', descripcion: '', categoria: '', avatar: ''});
-      setErrores({});
-    } else {
+      if (modo === "agregar") {
+        // Usar el contexto para agregar producto
+        const nuevoProducto = await agregarProducto(productoEnviar);
+        alert(`Producto "${nuevoProducto.nombre}" agregado correctamente con ID: ${nuevoProducto.id}`);
+       
+        // Limpiar formulario después del éxito
+        setProducto({
+          id: '',
+          nombre: '',
+          precio: '',
+          descripcion: '',
+          categoria: '',
+          avatar: ''
+        });
 
-    setTimeout(() => {
-    navigate('/productos');
+        setTimeout(() => {
+          navigate('/productos');
         }, 100);
-    }
-      
-      // Limpiar formulario después del éxito
-      setProducto({nombre: '', precio: '', descripcion: '', categoria: '', avatar: ''});
+
+      } else {
+        // Usar el contexto para editar producto
+        await editarProducto(productoEnviar);
+        alert('Producto actualizado correctamente');
+
+        setTimeout(() => {
+          navigate('/productos');
+        }, 100);
+      }
+     
       setErrores({});
+     
     } catch (error) {
+      alert(`Hubo un problema al ${modo === "editar" ? 'actualizar' : 'agregar'} el producto`);
       console.error('Error:', error);
     } finally {
       setCargando(false);
     }
-
-  
   };
 
   // Renderizado del componente

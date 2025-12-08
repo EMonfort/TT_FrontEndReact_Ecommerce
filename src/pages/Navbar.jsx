@@ -17,7 +17,7 @@ function Navbar() {
             {/* ENLACE PARA ADMIN - Solo visible para admin */}
             {usuario?.nombre === "admin" && (
               <li>
-                <Link to="/agregar-producto">Agregar Producto</Link>
+                <Link to="/formulario-producto">Agregar Producto</Link>
               </li>
             )}
             <li>
