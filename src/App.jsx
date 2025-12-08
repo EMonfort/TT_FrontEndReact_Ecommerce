@@ -15,6 +15,12 @@ import Dashboard from "./pages/Dashboard";
 import FormularioProducto from "./components/FormularioProducto";
 import EliminarProducto from "./components/EliminarProducto";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+
 function App() {
   return (
     <CartProvider>
@@ -36,6 +42,14 @@ function App() {
           <Route path="/eliminar-productos" element={<RutaProtegida soloAdmin={true}><EliminarProducto /></RutaProtegida>}/>
         </Routes>
       </div>
+      <ToastContainer
+              position="top-center"
+              autoClose={3000}
+              hideProgressBar={false}
+              closeOnClick
+              draggable
+              pauseOnHover
+            />
       </ProductsProvider>
       </InnerAuthProvider>
     </CartProvider>

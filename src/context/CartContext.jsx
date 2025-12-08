@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 //Crea el contexto
 export const CartContext = createContext();
@@ -8,10 +9,27 @@ export function CartProvider({children}) {
 
 
   const [carrito, setCarrito] = useState([])
+  const [ cargaCompleta, setCargaCompleta ] = useState(false)
+
+  useEffect( () => {
+    const carritoGuardado = localStorage.getItem("carrito")
+    if (carritoGuardado) {
+      setCarrito(JSON.parse(carritoGuardado))
+    }
+      setCargaCompleta(true)
+
+  }, [])
+
+  useEffect(() => {
+    if (cargaCompleta) {
+      localStorage.setItem("carrito", JSON.stringify(carrito))
+    }
+  }, [carrito, cargaCompleta])
 
 
   const agregarAlCarrito = (producto) => {
-  setCarrito([...carrito, producto])
+    setCarrito([...carrito, producto])
+    toast(`Producto ${producto.nombre} agregado.`);
   }
 
   const vaciarCarrito = () => {

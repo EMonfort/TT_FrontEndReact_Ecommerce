@@ -7,6 +7,7 @@ export const AuthContext = createContext();
 
 export function AuthProvider({children, onLogout}) {
   const [usuario, setUsuario] = useState(null)
+  const [cargando, setCargando ] = useState(true)
   const navigate = useNavigate();
 
 
@@ -21,17 +22,18 @@ export function AuthProvider({children, onLogout}) {
         email: emailGuardado || "",
       });
     }
+    setCargando(false)
   }, []);
 
   // Función para iniciar sesión
-  const iniciarSesion = (username) => {
+  const iniciarSesion = (username, emailIngresado) => {
     const token = `fake-token-${username}`;
     localStorage.setItem("authToken", token);
+    localStorage.setItem("authEmail", emailIngresado);
 
-    const emailGuardado = localStorage.getItem("authEmail");
     setUsuario({
       nombre: username,
-      email: emailGuardado || "",
+      email: emailIngresado || "",
     });
   };
 
@@ -53,6 +55,7 @@ export function AuthProvider({children, onLogout}) {
     cerrarSesion,
     iniciarSesion,
     isAuthenticated: !!usuario, // ← Propiedad computada
+    cargando
   }
 
   return  (

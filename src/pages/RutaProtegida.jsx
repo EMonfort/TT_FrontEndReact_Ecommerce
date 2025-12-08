@@ -4,7 +4,11 @@ import { useAuthContext } from '../context/AuthContext';
 function RutaProtegida({ children, soloAdmin }) {
   const location = useLocation();
 
-  const { usuario } = useAuthContext();
+  const { usuario, cargando } = useAuthContext();
+
+  if (cargando) {
+    return <div>Cargando...</div>;
+  }
  
   if (!usuario) {
     // Pasa el state actual (que contiene el carrito) a /login

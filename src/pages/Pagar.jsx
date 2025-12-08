@@ -40,8 +40,8 @@ export default function Pagar() {
         <hr />
       </div>
 
-      <div className="pagar-detalle">
-        <h2>Tu compra</h2>
+      <div className="pagar-detalle p-5">
+        <h2 className="mb-4">Tu compra</h2>
 
         {productosAgrupados.length === 0 ? (
           <p>No hay productos en el carrito.</p>
@@ -51,9 +51,9 @@ export default function Pagar() {
               <div key={producto.id} className="pagar-item">
                 <img src={producto.avatar} alt={producto.nombre} width="80" />
                 <div>
-                  <h4>{producto.nombre}</h4>
+                  <h4 className="fw-bold">{producto.nombre}</h4>
                   <p>Precio: ${Number(producto.precio).toFixed(2)}</p>
-                  <p>Cantidad: {producto.cantidad}</p>
+                  <p className="border-bottom">Cantidad: {producto.cantidad}</p>
                   <strong>
                     Subtotal: ${(producto.precio * producto.cantidad).toFixed(2)}
                   </strong>
@@ -61,13 +61,14 @@ export default function Pagar() {
               </div>
             ))}
             <hr />
-            <h3>Total a pagar: ${total.toFixed(2)}</h3>
+            <h3 className="fw-bold ">Total a pagar: ${total.toFixed(2)}</h3>
           </>
         )}
       </div>
 
       <div className="pagar-botones">
         <button onClick={comprar}>Confirmar y Pagar</button>
+        <button onClick={vaciarCarrito}>Vaciar Carrito</button>
         <button onClick={() => navigate("/productos")}>Cancelar</button>
       </div>
     </div>
