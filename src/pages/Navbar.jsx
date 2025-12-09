@@ -20,26 +20,44 @@ function Navbar() {
                 <Link to="/formulario-producto">Agregar Producto</Link>
               </li>
             )}
-            <li>
+            {/* Carrito */}
+            <li className="nav-item">
+            <Link className="nav-link" to="/pagar">
+              🛒 Carrito ({carrito.length})
+            </Link>
+              </li>
               {usuario ? (
-                <div>
+                <>
+                <li>
                   <span>Hola, {usuario.nombre}</span>
-                  <span>Carrito: {carrito.length}</span>
+                </li>
+            
+              
+                <div>
                   {/* ENLACE DASHBOARD solo para admin */}
                   {usuario.nombre === "admin" && (
+                    <li>
+                      <div>
                     <Link to="/dashboard" style={{margin: '0 10px'}}>
                       Dashboard
                     </Link>
+                    </div>
+                    </li>
                   )}  
-                  <button onClick={cerrarSesion}>
+                  
+                </div>
+             
+            <li>
+              <button onClick={cerrarSesion}>
                     Cerrar Sesión
                   </button>
-                </div>
-              ) : (
+            </li>
+             </>) : (
+              <li>
                 <Link to="iniciar-sesion">Iniciar Sesión</Link>
+                </li>
               )
             }
-            </li>
         </ul>
     </nav>
   )

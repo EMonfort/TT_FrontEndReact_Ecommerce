@@ -74,7 +74,6 @@ export const ProductsProvider = ({ children }) => {
         ...producto,
         precio: producto.precio.replace(',', '.')
       };
-      alert("ward")
       console.log(producto)
 
       const respuesta = await fetch('https://68f581886b852b1d6f1443f2.mockapi.io/productos', {
@@ -86,7 +85,6 @@ export const ProductsProvider = ({ children }) => {
       if (!respuesta.ok) throw new Error('Error al agregar el producto.');
 
       const data = await respuesta.json();
-      alert('Producto agregado correctamente');
       return data;
     } catch (error) {
       alert('Hubo un problema al agregar el producto.');

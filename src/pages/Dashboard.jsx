@@ -36,7 +36,7 @@ export default function Dashboard() {
           <h3>Acciones:</h3>
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' }}>
             <Link
-              to="/agregar-producto"
+              to="/formulario-producto"
               style={{
                 padding: '10px 20px',
                 background: '#28a745',

@@ -11,7 +11,6 @@ body {
   color: #3e2f1c;
   display: flex;
   flex-direction: column;
-  align-items: center;
   min-height: 100vh;
 }
 
@@ -31,7 +30,8 @@ nav ul {
   flex-wrap: wrap;
 }
 
-nav ul li a {
+nav ul li a,
+nav ul li span {
   text-decoration: none;
   color: #3e2f1c;
   font-weight: 600;
@@ -40,13 +40,6 @@ nav ul li a {
 
 nav ul li a:hover {
   color: #6a513b;
-}
-
-/* CONTENEDORES GENERALES */
-main, div {
-  margin: 1rem auto;
-  max-width: 1100px;
-  width: 90%;
 }
 
 h1, h2 {
@@ -74,7 +67,7 @@ button:hover {
 }
 
 /* GRID DE PRODUCTOS */
-ul {
+ul:not(nav ul) {
   list-style: none;
   padding: 0;
   display: grid;
@@ -82,7 +75,7 @@ ul {
   gap: 1.5rem;
 }
 
-ul li {
+ul:not(nav ul) li {
   background-color: #fffdf8;
   padding: 1rem;
   border-radius: 12px;
@@ -94,13 +87,12 @@ ul li {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-ul li:hover {
+ul:not(nav ul) li:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* IMÁGENES FIJAS DE PRODUCTOS */
-ul li img {
+ul:not(nav ul) li img {
   width: 220px;
   height: 220px;
   object-fit: cover;
@@ -270,11 +262,11 @@ ul li img {
     gap: 1rem;
   }
 
-  ul {
+  ul:not(nav ul) {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 
-  ul li img {
+  ul:not(nav ul) li img {
     width: 160px;
     height: 160px;
   }
@@ -296,4 +288,11 @@ ul li img {
   .pagar-item {
     grid-template-columns: 60px 1fr;
   }
+
+  .productos-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
+}
 }

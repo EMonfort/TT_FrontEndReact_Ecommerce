@@ -10,7 +10,7 @@ export default function Productos() {
 
   const [busqueda, setBusqueda] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
-  const productosPorPagina = 6;
+  const productosPorPagina = 8;
 
   const { agregarAlCarrito } = useCartContext();
   const { usuario } = useAuthContext();
@@ -109,58 +109,53 @@ export default function Productos() {
       </div>
 
       <ul id="lista-productos">
-        {productosActuales.map((producto) => (
-          <li key={producto.id}>
-            <h2>{producto.nombre}</h2>
-            <br />
-            Descripción: {producto.descripcion}
-            <br />
-            Precio: ${producto.precio}
-            <br />
-            <img src={producto.avatar} alt={producto.nombre} width="80%" />
-            <Link
-              to={`/productos/${producto.categoria}/${producto.id}`}
-              state={{ producto }}
-            >
-              <button>Más detalles</button>
-            </Link>
-            <button onClick={() => agregarAlCarrito(producto)}>Comprar</button>
-            {/* Botón Editar - SOLO visible para admin */}
-            {esAdmin && (
-              <div>
-                <hr />
-                <button
-                  onClick={() =>
-                    navigate("/formulario-producto", { state: { producto } })
-                  }
-                  style={{
-                    backgroundColor: "#28a745",
-                    color: "white",
-                    marginRight: "10px",
-                  }}
-                >
-                  Editar
-                </button>
+  {productosActuales.map((producto) => (
+    <li key={producto.id}>
+      <h2>{producto.nombre}</h2>
+      <p>{producto.descripcion}</p>
+      <strong>${producto.precio}</strong>
 
-                <button
-                  onClick={() =>
-                    navigate("/eliminar-productos", {
-                      state: { producto: producto },
-                    })
-                  }
-                  style={{
-                    backgroundColor: "#dc3545",
-                    color: "white",
-                    marginRight: "10px",
-                  }}
-                >
-                  Eliminar
-                </button>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
+      <img src={producto.avatar} alt={producto.nombre} />
+
+      <Link
+        to={`/productos/${producto.categoria}/${producto.id}`}
+        state={{ producto }}
+      >
+        <button className="btn btn-primary">Más detalles</button>
+      </Link>
+
+      <button
+        className="btn btn-success"
+        onClick={() => agregarAlCarrito(producto)}
+      >
+        Comprar
+      </button>
+
+      {esAdmin && (
+        <>
+          <hr />
+          <button
+            className="btn btn-warning"
+            onClick={() =>
+              navigate("/formulario-producto", { state: { producto } })
+            }
+          >
+            Editar
+          </button>
+
+          <button
+            className="btn btn-danger mt-2"
+            onClick={() =>
+              navigate("/eliminar-productos", { state: { producto } })
+            }
+          >
+            Eliminar
+          </button>
+        </>
+      )}
+    </li>
+  ))}
+</ul>
           {/* Paginador - Estilo simplificado */}
         {productosFiltrados.length > productosPorPagina && (
           <div className="d-flex justify-content-center my-4">
